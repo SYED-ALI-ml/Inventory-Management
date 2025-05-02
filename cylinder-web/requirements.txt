@@ -1,0 +1,7 @@
+flask==3.1.0
+werkzeug==3.0.2
+pymysql==1.1.0
+numpy==1.26.4
+torch==2.2.0
+opencv-python==4.9.0.80
+ultralytics==8.0.225 

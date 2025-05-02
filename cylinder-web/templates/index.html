@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cylinder Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="#4F46E5"/>
+                </svg>
+                <h1>Cylinder Detector</h1>
+            </div>
+            <nav>
+                <a href="#" class="active">Home</a>
+                <a href="#">About</a>
+                <a href="#">Help</a>
+                <!-- Database status button -->
+                <button id="db-status-btn" class="db-status-btn">
+                    <span id="db-status-icon" class="status-dot"></span>
+                    <span>Database</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <!-- Image Upload Area-->
+            <div class="panel">
+                <h2>Image Upload</h2>
+                <div id="upload-container" class="upload-area">
+                    <div id="upload-prompt" class="upload-prompt">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 8L12 3L7 8" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 3V15" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <p>Drop your image here or click to browse</p>
+                    </div>
+                    <div id="preview-container" class="preview-container" style="display: none;" onclick="event.stopPropagation();">
+                        <div class="image-wrapper">
+                            <img id="preview-image" src="" alt="Preview" draggable="false">
+                        </div>
+                        <button id="remove-image" class="remove-button" onclick="event.stopPropagation();">×</button>
+                        
+                        <div class="move-indicator">Drag to move image</div>
+                        
+                        <div class="image-controls" onclick="event.stopPropagation();">
+                            <button class="zoom-btn" id="zoom-out">-</button>
+                            <button class="zoom-btn" id="zoom-in">+</button>
+                        </div>
+                    </div>
+                    <input type="file" id="file-input" accept="image/*" style="display: none;">
+                </div>
+            </div>
+            
+            <!-- Record of Data Panel -->
+            <div class="panel">
+                <h2>Record of Data</h2>
+                <div id="detection-results" class="detection-results">
+                    <div class="no-data">No detection data available</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <!-- Start Process Button -->
+            <div class="panel action-panel">
+                <button id="detect-button" class="process-button" disabled>
+                    Start Process
+                </button>
+                <div class="loader" style="display: none;"></div>
+            </div>
+            
+            <!-- History Track Visualization -->
+            <div class="panel">
+                <h2>History Track</h2>
+                <div id="history-track" class="history-track">
+                    <div class="no-data">No detection history available</div>
+                </div>
+            </div>
+            
+            <!-- Popular Times Graph -->
+            <div class="panel">
+                <h2>Popular Times</h2>
+                <div class="popular-times-content">
+                    <div class="days-row">
+                        <span class="day active">MON</span>
+                        <span class="day">TUE</span>
+                        <span class="day">WED</span>
+                        <span class="day">THU</span>
+                        <span class="day">FRI</span>
+                        <span class="day">SAT</span>
+                        <span class="day">SUN</span>
+                    </div>
+                    <div class="status-info">
+                        <div class="status">
+                            <span class="status-dot"></span>
+                            <span>Live: Busy</span>
+                        </div>
+                        <div class="wait-time">Usually up to 30 mins wait</div>
+                    </div>
+                    <div class="time-labels">
+                        <span>9a</span>
+                        <span>12p</span>
+                        <span>3p</span>
+                        <span>6p</span>
+                        <span>9p</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="error-toast" class="error-toast" style="display: none;">
+        <div class="error-message"></div>
+        <button class="close-error">×</button>
+    </div>
+    
+    <!-- Add a notification toast for successful connection -->
+    <div id="success-toast" class="success-toast" style="display: none;">
+        <div class="success-message">Database connected successfully!</div>
+        <button class="close-success">×</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 
